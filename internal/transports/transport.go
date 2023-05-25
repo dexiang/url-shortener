@@ -34,7 +34,7 @@ func encodeRedirectResponse(ctx context.Context, w http.ResponseWriter, response
 	return nil
 }
 
-func NewHTTPServer(ctx context.Context, endpoints endpoints.Endpoints) http.Handler {
+func NewHTTPHandler(ctx context.Context, endpoints endpoints.Endpoints) http.Handler {
 	r := mux.NewRouter()
 	r.Use(commonMiddleware)
 

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-kit/kit/endpoint"
+	"github.com/go-kit/kit/log"
 
 	"github.com/dexiang/url-shortener/internal/service"
 )
@@ -50,11 +51,21 @@ func MakeRedirectEndpoint(s service.URLShortenerService) endpoint.Endpoint {
 	}
 }
 
-func New(s service.URLShortenerService) Endpoints {
-	endpoints := Endpoints{
-		ShortenEndpoint:  MakeShortenEndpoint(s),
-		RedirectEndpoint: MakeRedirectEndpoint(s),
+func New(s service.URLShortenerService, logger log.Logger) Endpoints {
+
+	var shortenEndpoint endpoint.Endpoint
+	{
+		shortenEndpoint = MakeShortenEndpoint(s)
+		shortenEndpoint = LoggingMiddleware(log.With(logger, "method", "shorten"))(shortenEndpoint)
+	}
+	var redirectEndpoint endpoint.Endpoint
+	{
+		redirectEndpoint = MakeRedirectEndpoint(s)
+		redirectEndpoint = LoggingMiddleware(log.With(logger, "method", "redirect"))(redirectEndpoint)
 	}
 
-	return endpoints
+	return Endpoints{
+		ShortenEndpoint:  shortenEndpoint,
+		RedirectEndpoint: redirectEndpoint,
+	}
 }

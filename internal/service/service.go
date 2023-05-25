@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"time"
+
+	"github.com/go-kit/kit/log"
 )
 
 type URLShortenerService interface {
@@ -16,10 +18,19 @@ func (s tinyURLService) ShortenURL(ctx context.Context, url string, expireAt tim
 	return "<ID>", nil
 }
 
-func (s tinyURLService) GetOriginalURL(ctx context.Context, url string) (string, error) {
+func (s tinyURLService) GetOriginalURL(ctx context.Context, id string) (string, error) {
 	return "<original_url>", nil
 }
 
-func New() URLShortenerService {
+func NewTinyURLService() URLShortenerService {
 	return tinyURLService{}
+}
+
+func New(logger log.Logger) URLShortenerService {
+	var svc URLShortenerService
+	{
+		svc = NewTinyURLService()
+		svc = LoggingMiddleware(logger)(svc)
+	}
+	return svc
 }
