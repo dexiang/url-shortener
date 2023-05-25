@@ -7,7 +7,7 @@ import (
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/log"
 
-	"github.com/dexiang/url-shortener/internal/service"
+	"github.com/dexiang/url-shortener/internal/app/service"
 )
 
 type Endpoints struct {

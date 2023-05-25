@@ -8,7 +8,7 @@ import (
 	httptransport "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
 
-	"github.com/dexiang/url-shortener/internal/endpoints"
+	"github.com/dexiang/url-shortener/internal/app/endpoints"
 )
 
 func decodeShortenRequest(ctx context.Context, r *http.Request) (interface{}, error) {

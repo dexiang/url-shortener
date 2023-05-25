@@ -8,9 +8,9 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 
-	"github.com/dexiang/url-shortener/internal/endpoints"
-	"github.com/dexiang/url-shortener/internal/service"
-	"github.com/dexiang/url-shortener/internal/transports"
+	"github.com/dexiang/url-shortener/internal/app/endpoints"
+	"github.com/dexiang/url-shortener/internal/app/service"
+	"github.com/dexiang/url-shortener/internal/app/transports"
 )
 
 func main() {
