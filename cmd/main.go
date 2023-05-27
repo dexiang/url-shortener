@@ -28,5 +28,6 @@ func main() {
 	endpoints := endpoints.New(service, logger)
 	handler := transports.NewHTTPHandler(ctx, endpoints)
 
-	http.ListenAndServe(":80", handler)
+	logger.Log("Listening on port 8080")
+	http.ListenAndServe(":8080", handler)
 }

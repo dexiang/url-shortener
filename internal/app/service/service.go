@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-kit/kit/log"
+	"github.com/google/uuid"
 )
 
 type URLShortenerService interface {
@@ -15,7 +16,11 @@ type URLShortenerService interface {
 type tinyURLService struct{}
 
 func (s tinyURLService) ShortenURL(ctx context.Context, url string, expireAt time.Time) (string, error) {
-	return "<ID>", nil
+
+	uuid := uuid.New()
+	key := uuid.String()
+
+	return key, nil
 }
 
 func (s tinyURLService) GetOriginalURL(ctx context.Context, id string) (string, error) {

@@ -1,7 +1,10 @@
 # URL Shortener
 
 ## Usage
-
+## start service(Local)
+```zsh
+skaffold dev
+```
 ### Generate Shortened URL
 ```zsh
 curl -X POST -H "Content-Type:application/json" http://localhost/api/v1/urls -d '{"url": "<original_url>","expireAt": "2021-02-08T09:20:41Z"}'
@@ -42,3 +45,8 @@ use 302 Redirect to original URL
 
 # Features
 - [Go-Kit](https://github.com/go-kit/kit)
+- UUID
+- DevOps: The app is designed to run on Kubernetes (both locally on "Docker for Desktop", as well as on the cloud with GKE).
+  - [K8s](https://kubernetes.io/)
+  - [Skaffold](https://skaffold.dev/)
+  - [Buildpacks](https://buildpacks.io/)

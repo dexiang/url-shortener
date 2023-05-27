@@ -1,0 +1,19 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+build:
+  artifacts:
+    - image: url-shortener
+      buildpacks:
+        env:
+          - GOPROXY={{.GOPROXY}}
+          - GOOGLE_GO_VERSION=1.20.2
+          - GOOGLE_BUILDABLE=cmd/main.go
+        dependencies:
+          paths:
+            - cmd/main.go
+            - internal/app/**
+            - internal/pkg/**
+profiles:
+  - name: gcb
+    build:
+      googleCloudBuild: {}
