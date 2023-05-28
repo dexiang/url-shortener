@@ -31,8 +31,8 @@ func (mv loggingMiddleware) ShortenURL(ctx context.Context, url string, expireAt
 
 func (mv loggingMiddleware) GetOriginalURL(ctx context.Context, id string) (url string, err error) {
 	defer func() {
-		mv.logger.Log("method", "GetOriginalURL", "url", url, "err", err)
+		mv.logger.Log("method", "GetOriginalURL", "id", id, "err", err)
 	}()
 
-	return mv.next.GetOriginalURL(ctx, url)
+	return mv.next.GetOriginalURL(ctx, id)
 }

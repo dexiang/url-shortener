@@ -47,6 +47,9 @@ func MakeRedirectEndpoint(s service.URLShortenerService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(RedirectRequest)
 		originalURL, err := s.GetOriginalURL(ctx, req.ID)
+		if err == service.ErrIDNotFound {
+			return RedirectResponse{Res: "", Err: err}, nil
+		}
 		return RedirectResponse{Res: originalURL}, err
 	}
 }

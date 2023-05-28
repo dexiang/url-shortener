@@ -2,39 +2,51 @@ package service
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/go-kit/kit/log"
 	"github.com/google/uuid"
+
+	"github.com/dexiang/url-shortener/internal/app/model"
 )
+
+var ErrIDNotFound = errors.New("cannot found url id")
 
 type URLShortenerService interface {
 	ShortenURL(ctx context.Context, url string, expireAt time.Time) (string, error)
-	GetOriginalURL(ctx context.Context, url string) (string, error)
+	GetOriginalURL(ctx context.Context, id string) (string, error)
 }
 
-type tinyURLService struct{}
+type tinyURLService struct {
+	repo model.URLRepository
+}
 
 func (s tinyURLService) ShortenURL(ctx context.Context, url string, expireAt time.Time) (string, error) {
-
 	uuid := uuid.New()
 	key := uuid.String()
-
+	s.repo.Set(ctx, key, url)
 	return key, nil
 }
 
 func (s tinyURLService) GetOriginalURL(ctx context.Context, id string) (string, error) {
-	return "<original_url>", nil
+	original_url, err := s.repo.GetByID(ctx, id)
+	if err == model.ErrIDNotFound {
+		return "", ErrIDNotFound
+	}
+	return original_url, err
 }
 
-func NewTinyURLService() URLShortenerService {
-	return tinyURLService{}
+func NewTinyURLService(repo model.URLRepository) URLShortenerService {
+	return tinyURLService{
+		repo: repo,
+	}
 }
 
-func New(logger log.Logger) URLShortenerService {
+func New(repo model.URLRepository, logger log.Logger) URLShortenerService {
 	var svc URLShortenerService
 	{
-		svc = NewTinyURLService()
+		svc = NewTinyURLService(repo)
 		svc = LoggingMiddleware(logger)(svc)
 	}
 	return svc

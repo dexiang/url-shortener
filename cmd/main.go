@@ -7,8 +7,10 @@ import (
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
+	"github.com/redis/go-redis/v9"
 
 	"github.com/dexiang/url-shortener/internal/app/endpoints"
+	"github.com/dexiang/url-shortener/internal/app/model"
 	"github.com/dexiang/url-shortener/internal/app/service"
 	"github.com/dexiang/url-shortener/internal/app/transports"
 )
@@ -24,7 +26,21 @@ func main() {
 	}
 
 	ctx := context.Background()
-	service := service.New(logger)
+
+	db := redis.NewClient(&redis.Options{
+		Addr:     "redis-master:6379",
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+
+	_, err := db.Ping(ctx).Result()
+	if err != nil {
+		logger.Log("err", err)
+		os.Exit(1)
+	}
+
+	repository := model.New(db, logger)
+	service := service.New(repository, logger)
 	endpoints := endpoints.New(service, logger)
 	handler := transports.NewHTTPHandler(ctx, endpoints)
 

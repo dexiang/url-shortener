@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"path"
 
 	httptransport "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
@@ -22,15 +23,20 @@ func encodeShortenResponse(ctx context.Context, w http.ResponseWriter, response 
 }
 
 func decodeRedirectRequest(ctx context.Context, r *http.Request) (interface{}, error) {
-	return endpoints.RedirectRequest{ID: r.URL.RequestURI()}, nil
+	return endpoints.RedirectRequest{ID: path.Base(r.URL.RequestURI())}, nil
 }
 
 func encodeRedirectResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
 
 	resp := response.(endpoints.RedirectResponse)
 
-	w.Header().Set("Location", resp.Res)
-	w.WriteHeader(http.StatusFound)
+	if resp.Err != nil {
+		w.WriteHeader(http.StatusNotFound)
+	} else {
+		w.Header().Set("Location", resp.Res)
+		w.WriteHeader(http.StatusFound)
+	}
+
 	return nil
 }
 
@@ -44,7 +50,9 @@ func NewHTTPHandler(ctx context.Context, endpoints endpoints.Endpoints) http.Han
 		encodeShortenResponse,
 	))
 
-	r.Methods("GET").Path("/{id:[a-zA-Z0-9]+}").Handler(httptransport.NewServer(
+	// {id:[a-zA-Z0-9]+}
+	// {id:[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-4[a-fA-F0-9]{3}-[8|9|aA|bB][a-fA-F0-9]{3}-[a-fA-F0-9]{12}}
+	r.Methods("GET").Path("/{id}").Handler(httptransport.NewServer(
 		endpoints.RedirectEndpoint,
 		decodeRedirectRequest,
 		encodeRedirectResponse,
