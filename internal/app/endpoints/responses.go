@@ -1,8 +1,9 @@
 package endpoints
 
 type ShortenResponse struct {
-	Res string `json:"res"` // res
-	Err error  `json:"-"`   // err
+	ID       string `json:"id"`
+	ShortUrl string `json:"shortUrl"`
+	Err      error  `json:"-"`
 }
 
 type RedirectResponse struct {

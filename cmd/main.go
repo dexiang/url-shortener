@@ -15,7 +15,21 @@ import (
 	"github.com/dexiang/url-shortener/internal/app/transports"
 )
 
+func envString(env, fallback string) string {
+	e := os.Getenv(env)
+	if e == "" {
+		os.Setenv(env, fallback)
+		return fallback
+	}
+	return e
+}
+
 func main() {
+
+	var (
+		ServiceHost = envString("SERVICE_HOST", "localhost")
+		HttpPort    = envString("SERVICE_PORT", "8080")
+	)
 
 	var logger log.Logger
 	{
@@ -44,6 +58,6 @@ func main() {
 	endpoints := endpoints.New(service, logger)
 	handler := transports.NewHTTPHandler(ctx, endpoints)
 
-	logger.Log("Listening on port 8080")
-	http.ListenAndServe(":8080", handler)
+	logger.Log("Listening ", ServiceHost, " on port ", HttpPort)
+	http.ListenAndServe(":"+HttpPort, handler)
 }
