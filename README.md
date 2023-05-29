@@ -2,7 +2,9 @@
 
 Table of **KEY** Contents
 - [System Design Concept](#system-design-concept)
+- [Finial Conclusion](#finial-conclusion)
 - [Check and Acceptance](#check-and-acceptance)
+  - [Enhancement](#enhancement)
 
 ---
 
@@ -89,20 +91,29 @@ use 302 Redirect to original URL
   - Billions of data
   - Read-heavy
 
-### conclusion
+## Finial Conclusion
 
-因時程考量，使用 random integer and base62 encoded + Redis
+因時程考量，最終使用 random integer and base62 encoded + Redis 來設計 URL Shortener
 
 ## Check and Acceptance
 
 - 基本功能
   - 啟動服務
+    - [x] local development, run:
+      ```zsh
+        skaffold dev
+      ```
+      ```zsh
+        minikube tunnel
+      ```
   - 兩隻 API 的 happy path
+    - [X] 產生短網址, API: `http://localhost/api/v1/urls`, run:
+    - [X] 短網址導向, API: `http://localhost/<url_id>`, run:
 - error handling
-  - 錯誤的短網址
-  - 錯誤的參數
-- Unit Test
-- Performance Test
+  - [X] 錯誤的短網址，404
+  - [X] 錯誤的參數
+- [ ] Unit Test
+- [ ] Performance Test
 - Technical Stack
   - [Go-Kit](https://github.com/go-kit/kit)
   - [Skaffold](https://skaffold.dev/)
@@ -111,6 +122,14 @@ use 302 Redirect to original URL
     - minikube
   - Redis
   - Base62 Encode/Decode
+
+#### Enhancement
+- Step0: Unit Test & Performance Test
+- Step1: Using ZooKeeper to implement a cluster shared counter
+- Step2: Storage Replacement
+  - Redis: 適合快速讀寫
+  - DynamoDB: 巨量資料
+- Step3: Scale Out
 
 ## Project Layout
 - single service put at `internal/app`
