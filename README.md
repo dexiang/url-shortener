@@ -47,15 +47,16 @@ use 302 Redirect to original URL
 
 # Features
 - [Go-Kit](https://github.com/go-kit/kit)
-- UUID
 - DevOps: The app is designed to run on Kubernetes (both locally on "Docker for Desktop", as well as on the cloud with GKE).
   - [K8s](https://kubernetes.io/)
   - [Skaffold](https://skaffold.dev/)
   - [Buildpacks](https://buildpacks.io/)
 - Redis
+- random + Base62
 
 # Enhancement
 - Algorithm
+  - Solution 0: UUID
   - Solution 1: md5
     - may have collision
     - Extract first 6 characters

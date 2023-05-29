@@ -3,15 +3,18 @@ package service
 import (
 	"context"
 	"errors"
+	"math"
+	"math/rand"
 	"time"
 
 	"github.com/go-kit/kit/log"
-	"github.com/google/uuid"
 
 	"github.com/dexiang/url-shortener/internal/app/model"
+	"github.com/dexiang/url-shortener/internal/pkg/base62"
 )
 
 const maxExpirationTime = 3 * 365 * 24 * time.Hour // 3 Year
+var maxRandomRange = int(math.Pow(62, 6) - 1)      // Base62, 6 characters
 
 var ErrIDNotFound = errors.New("cannot found url id")
 var ErrMaxExpirationTimeExceeded = errors.New("the expiration time cannot exceed three years")
@@ -40,7 +43,8 @@ func (s tinyURLService) ShortenURL(ctx context.Context, url string, expireAt tim
 
 	var uid string
 	for uid == "" {
-		key := uuid.New().String()
+		key := base62.Encode(rand.Intn(maxRandomRange))
+
 		if isExist, _ := s.repo.Exists(ctx, key); !isExist {
 			uid = key
 		}
