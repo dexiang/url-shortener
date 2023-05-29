@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/redis/go-redis/v9"
 
@@ -12,7 +13,7 @@ import (
 var ErrIDNotFound = errors.New("cannot found url id")
 
 type URLRepository interface {
-	Set(context.Context, string, string) error
+	Set(context.Context, string, string, time.Duration) error
 	GetByID(context.Context, string) (string, error)
 }
 
@@ -20,8 +21,8 @@ type urlRepository struct {
 	db *redis.Client
 }
 
-func (m urlRepository) Set(ctx context.Context, id string, url string) error {
-	err := m.db.Set(ctx, id, url, 0).Err()
+func (m urlRepository) Set(ctx context.Context, id string, url string, expiration time.Duration) error {
+	err := m.db.SetEx(ctx, id, url, expiration).Err()
 	return err
 }
 

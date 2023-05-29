@@ -55,7 +55,15 @@ use 302 Redirect to original URL
 - Redis
 
 # Enhancement
-- Phase 1
-  - counter + Base62 
-- Phase 2
-  - Zookeeper
+- Algorithm
+  - Solution 1: md5
+    - may have collision
+    - Extract first 6 characters
+  - Solution 2: random + Base62
+    - To prevent collisions, it is needs to constantly ensure that unique
+    - Keep length to 6 characters
+    - prevent collision
+  - Solution 3: counter + Base62 
+    - Predictable
+    - In a decentralized architecture is a challenge
+  - Solution 4: Zookeeper

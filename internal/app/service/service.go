@@ -11,7 +11,11 @@ import (
 	"github.com/dexiang/url-shortener/internal/app/model"
 )
 
+const maxExpirationTime = 3 * 365 * 24 * time.Hour // 3 Year
+
 var ErrIDNotFound = errors.New("cannot found url id")
+var ErrMaxExpirationTimeExceeded = errors.New("the expiration time cannot exceed three years")
+var ErrTimeExpired = errors.New("cannot set expired time")
 
 type URLShortenerService interface {
 	ShortenURL(ctx context.Context, url string, expireAt time.Time) (string, error)
@@ -23,9 +27,20 @@ type tinyURLService struct {
 }
 
 func (s tinyURLService) ShortenURL(ctx context.Context, url string, expireAt time.Time) (string, error) {
+
+	current := time.Now()
+	diff := expireAt.Sub(current)
+
+	if diff > maxExpirationTime {
+		return "", ErrMaxExpirationTimeExceeded
+	}
+	if diff < 0 {
+		return "", ErrTimeExpired
+	}
+
 	uuid := uuid.New()
 	key := uuid.String()
-	s.repo.Set(ctx, key, url)
+	s.repo.Set(ctx, key, url, diff)
 	return key, nil
 }
 
