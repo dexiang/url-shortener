@@ -3,7 +3,7 @@ package endpoints
 import "time"
 
 type ShortenRequest struct {
-	URL      string    `json:"url"`
+	URL      string    `json:"url" validate:"required,url"`
 	ExpireAt time.Time `json:"expireAt"` // ISO8601
 }
 

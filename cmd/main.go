@@ -56,7 +56,7 @@ func main() {
 	repository := model.New(db, logger)
 	service := service.New(repository, logger)
 	endpoints := endpoints.New(service, logger)
-	handler := transports.NewHTTPHandler(ctx, endpoints)
+	handler := transports.NewHTTPHandler(ctx, endpoints, logger)
 
 	logger.Log("Listening ", ServiceHost, " on port ", HttpPort)
 	http.ListenAndServe(":"+HttpPort, handler)
