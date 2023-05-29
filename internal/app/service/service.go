@@ -38,10 +38,17 @@ func (s tinyURLService) ShortenURL(ctx context.Context, url string, expireAt tim
 		return "", ErrTimeExpired
 	}
 
-	uuid := uuid.New()
-	key := uuid.String()
-	s.repo.Set(ctx, key, url, diff)
-	return key, nil
+	var uid string
+	for uid == "" {
+		key := uuid.New().String()
+		if isExist, _ := s.repo.Exists(ctx, key); !isExist {
+			uid = key
+		}
+	}
+
+	s.repo.Set(ctx, uid, url, diff)
+
+	return uid, nil
 }
 
 func (s tinyURLService) GetOriginalURL(ctx context.Context, id string) (string, error) {

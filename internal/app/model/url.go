@@ -13,12 +13,18 @@ import (
 var ErrIDNotFound = errors.New("cannot found url id")
 
 type URLRepository interface {
+	Exists(context.Context, string) (bool, error)
 	Set(context.Context, string, string, time.Duration) error
 	GetByID(context.Context, string) (string, error)
 }
 
 type urlRepository struct {
 	db *redis.Client
+}
+
+func (m urlRepository) Exists(ctx context.Context, id string) (bool, error) {
+	n, err := m.db.Exists(ctx, id).Result()
+	return n > 0, err
 }
 
 func (m urlRepository) Set(ctx context.Context, id string, url string, expiration time.Duration) error {
