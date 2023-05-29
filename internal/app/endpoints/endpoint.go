@@ -18,7 +18,7 @@ func MakeShortenEndpoint(s service.URLShortenerService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(ShortenRequest)
 		urlID, err := s.ShortenURL(ctx, req.URL, req.ExpireAt)
-		return ShortenResponse{ID: urlID, ShortUrl: "http://" + os.Getenv("SERVICE_HOST") + ":" + os.Getenv("SERVICE_PORT")}, err
+		return ShortenResponse{ID: urlID, ShortUrl: "http://" + os.Getenv("SERVICE_HOST") + ":" + os.Getenv("SERVICE_PORT") + "/" + urlID}, err
 	}
 }
 
