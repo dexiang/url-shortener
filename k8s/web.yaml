@@ -4,7 +4,7 @@ metadata:
   name: web
 spec:
   ports:
-    - port: 8080
+    - port: 80
       name: http
   type: LoadBalancer
   selector:
@@ -27,4 +27,4 @@ spec:
         - name: web
           image: url-shortener
           ports:
-            - containerPort: 8080
+            - containerPort: 80

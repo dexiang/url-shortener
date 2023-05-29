@@ -28,7 +28,7 @@ func main() {
 
 	var (
 		ServiceHost = envString("SERVICE_HOST", "localhost")
-		HttpPort    = envString("SERVICE_PORT", "8080")
+		HttpPort    = envString("SERVICE_PORT", "80")
 	)
 
 	var logger log.Logger
